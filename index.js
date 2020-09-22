@@ -114,11 +114,14 @@ ipcMain.on('history-back', (event, arg) => {
 ipcMain.on('history-forward', (event, arg) => {
   currentWindow.webContents.goForward()
 })
-ipcMain.on('window-reload', (event, arg) => {
+ipcMain.on('page-reload', (event, arg) => {
   currentWindow.webContents.reload()
 })
-ipcMain.on('window-stop-loading', (event, arg) => {
+ipcMain.on('page-stop-loading', (event, arg) => {
   currentWindow.webContents.stop()
+})
+ipcMain.on('goto-homepage', (event, arg) => {
+  currentWindow.loadFile('index.html')
 })
 ipcMain.on('app-minimize', (event, arg) => {
   parentWindow.minimize()

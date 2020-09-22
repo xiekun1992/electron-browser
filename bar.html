@@ -29,10 +29,10 @@
   <main>
     <div>
       <ul class="window-ops">
-        <li class="window-back"><a class="ico-btn"><span class="icon-arrow-left2"></span></a></li>
-        <li class="window-forward"><a class="ico-btn"><span class="icon-arrow-right2"></span></a></li>
-        <li class="window-reload"><a class="ico-btn"><span class="icon-spinner11"></span></a></li>
-        <li class="window-homepage"><a class="ico-btn"><span class="icon-home2"></span></a></li>
+        <li id="historyBackBtn"><a class="ico-btn"><span class="icon-arrow-left2"></span></a></li>
+        <li id="historyForwardBtn"><a class="ico-btn"><span class="icon-arrow-right2"></span></a></li>
+        <li id="pageReloadBtn"><a class="ico-btn"><span class="icon-spinner11"></span></a></li>
+        <li id="homepageBtn"><a class="ico-btn"><span class="icon-home2"></span></a></li>
       </ul>
     </div>
     <form onsubmit="gotoSite(event)">
@@ -78,6 +78,18 @@
     }
     closeBtn.onclick = function() {
       ipcRenderer.send('app-close')
+    }
+    historyBackBtn.onclick = function() {
+      ipcRenderer.send('history-back')
+    }
+    historyForwardBtn.onclick = function() {
+      ipcRenderer.send('history-forward')
+    }
+    pageReloadBtn.onclick = function() {
+      ipcRenderer.send('page-reload')
+    }
+    homepageBtn.onclick = function() {
+      ipcRenderer.send('goto-homepage')
     }
   </script>
 </body>
