@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>topbar</title>
+  <link rel="stylesheet" href="./css/bar.css">
+</head>
+<body>
+  <header class="clearfix">
+    <ul class="tabs">
+      <li class="tab-window left">新标签页</li>
+      <li class="tab-window active">新标签页</li>
+      <li class="tab-window right">新标签页</li>
+      <li class="tab-add"></li>
+    </ul>
+  </header>
+  <main>
+    <div>
+      <ul class="window-ops">
+        <li class="window-back"></li>
+        <li class="window-forward"></li>
+        <li class="window-reload"></li>
+        <li class="window-homepage"></li>
+      </ul>
+    </div>
+    <form onsubmit="gotoSite(event)">
+      <input type="text" id="url" spellcheck="false">
+    </form>
+    <div></div>
+  </main>
+  <footer>
+    <ul>
+      <li>书签栏</li>
+    </ul>
+  </footer>
+  <script>
+    const {
+      ipcRenderer
+    } = require('electron')
+    function gotoSite(e) {
+      e.preventDefault()
+      ipcRenderer.send('goto-website', url.value)
+    }
+    ipcRenderer.on('goto-website-done', (event, arg) => {
+      url.value = arg.url
+      document.querySelector('.tab-window.active').innerHTML = arg.title
+    })
+  </script>
+</body>
+</html>
