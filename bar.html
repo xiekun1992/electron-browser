@@ -4,30 +4,53 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>topbar</title>
-  <link rel="stylesheet" href="./css/bar.css">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/bar-header.css">
+  <link rel="stylesheet" href="./css/bar-address.css">
 </head>
 <body>
   <header class="clearfix">
     <ul class="tabs">
-      <li class="tab-window left">新标签页</li>
+      <!-- <li class="tab-window left">新标签页</li> -->
       <li class="tab-window active">新标签页</li>
-      <li class="tab-window right">新标签页</li>
-      <li class="tab-add"></li>
+      <!-- <li class="tab-window right">新标签页</li> -->
+      <li class="tab-add">
+        <a class="ico-btn">
+          <span class="icon-plus"></span>
+        </a>
+      </li>
+    </ul>
+    <ul class="clearfix app-ops">
+      <li id="minBtn"><a><span class="icon-minus"></span></a></li>
+      <li id="maxBtn"><a><span class="icon-plus"></span></a></li>
+      <li id="closeBtn"><a><span class="icon-cross"></span></a></li>
     </ul>
   </header>
   <main>
     <div>
       <ul class="window-ops">
-        <li class="window-back"></li>
-        <li class="window-forward"></li>
-        <li class="window-reload"></li>
-        <li class="window-homepage"></li>
+        <li class="window-back"><a class="ico-btn"><span class="icon-arrow-left2"></span></a></li>
+        <li class="window-forward"><a class="ico-btn"><span class="icon-arrow-right2"></span></a></li>
+        <li class="window-reload"><a class="ico-btn"><span class="icon-spinner11"></span></a></li>
+        <li class="window-homepage"><a class="ico-btn"><span class="icon-home2"></span></a></li>
       </ul>
     </div>
     <form onsubmit="gotoSite(event)">
-      <input type="text" id="url" spellcheck="false">
+      <div>
+        <div class="address-tip pull-left ico-btn">
+          <span class="icon-lock"></span>
+        </div>
+        <input type="text" id="url" spellcheck="false">
+        <div class="address-tip pull-right ico-btn">
+          <span class="icon-star-empty"></span>
+        </div>
+      </div>
     </form>
-    <div></div>
+    <div class="clearfix">
+      <ul class="pull-right">
+        <li><a class="ico-btn"><span class="icon-paragraph-justify"></span></a></li>
+      </ul>
+    </div>
   </main>
   <footer>
     <ul>
@@ -46,6 +69,16 @@
       url.value = arg.url
       document.querySelector('.tab-window.active').innerHTML = arg.title
     })
+
+    minBtn.onclick = function() {
+      ipcRenderer.send('app-minimize')
+    }
+    maxBtn.onclick = function() {
+      ipcRenderer.send('app-maximize')
+    }
+    closeBtn.onclick = function() {
+      ipcRenderer.send('app-close')
+    }
   </script>
 </body>
 </html>

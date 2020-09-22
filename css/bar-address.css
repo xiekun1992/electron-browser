@@ -1,0 +1,53 @@
+main {
+    display: inline-grid;
+    width: 100%;
+    grid-template-columns: 120px auto 36px;
+    padding: 8px 10px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #cccccc;
+}
+main>form>div {
+    /* border-radius: 20px; */
+    /* padding: 0 3px; */
+    background-color: #eee;
+    transition: background-color .3s;
+}
+main > form input {
+    border-left: 1px solid #000;
+    display: inline-block;
+    width: calc(100% - 56px);
+    font-size: 16px;
+    border: 1px solid transparent;
+    padding: 4px 8px 4px 0;
+    outline: 0;
+    background-color: transparent;
+}
+main > form > div:hover {
+    background-color: #dedede;
+}
+footer {
+    display: none;
+    height: 31px;
+    border-bottom: 1px solid #ccc;
+    background-color: #ffffff;
+}
+.window-ops {
+    display: flex;
+    align-items: center;
+}
+.ico-btn {
+    border-radius: 2px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color .3s;
+}
+.ico-btn:hover {
+    background-color: #ccc;
+}
+[class*=icon-] {
+    font-size: 18px;
+    color: #555;
+}

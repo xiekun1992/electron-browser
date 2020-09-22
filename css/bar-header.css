@@ -4,13 +4,20 @@
 body {
   font-family: microsoft yahei, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   margin: 0;
-  background: #007fff;
+  background: #fff;
+  /* background: #007fff; */
   margin: 2px;
 }
 ul, li {
   margin: 0;
   padding: 0;
   list-style: none;
+}
+.pull-left {
+  float: left;
+}
+.pull-right {
+  float: right;
 }
 .clearfix::before,
 .clearfix::after {
@@ -30,7 +37,7 @@ ul, li {
   font-size: 14px;
   -webkit-app-region: drag;
   width: 100%;
-  padding: 8px 10px 0 10px;
+  padding: 7px 10px 0 10px;
   background-color: #eeeeee;
 }
 .tabs>li {
@@ -78,29 +85,33 @@ ul, li {
   width: 30px;
   height: 30px;
   display: inline-block;
-  margin-left: 10px;
-  border: 1px solid;
+  margin-left: 8px;
 }
-main {
-  padding: 8px 10px;
-  background-color: #ffffff;
-  /* border-bottom: 1px solid #cccccc; */
+.tabs>li.tab-add [class*=icon-] {
+  font-size: 12px;
 }
-main > form > input {
-  display: inline-block;
-  width: 60%;
-  font-size: 16px;
-  border: 1px solid transparent;
-  padding: 4px 8px;
-  outline: 0;
-  background-color: #eee;
+.app-ops {
+  -webkit-app-region: no-drag;
+  position: fixed;
+  top: 2px;
+  right: 2px;
+}
+.app-ops>li {
+  width: 40px;
+  height: 26px;
+  float: left;
+  text-align: center;
   transition: background-color .3s;
 }
-main > input:hover {
-  background-color: #dedede;
+.app-ops>li:hover {
+  background-color: #ccc;
 }
-footer {
-  height: 31px;
-  border-bottom: 1px solid #ccc;
-  background-color: #ffffff;
+.app-ops>li:last-child:hover {
+  background-color: #e74c3c;
+}
+.app-ops>li:last-child:hover [class*=icon-] {
+  color: #fff;
+}
+.app-ops [class*=icon-] {
+  font-size: 10px;
 }
