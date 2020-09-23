@@ -40,7 +40,7 @@
         <div class="address-tip pull-left ico-btn">
           <span class="icon-lock"></span>
         </div>
-        <input type="text" id="url" spellcheck="false">
+        <input type="text" id="urlEl" spellcheck="false">
         <div class="address-tip pull-right ico-btn">
           <span class="icon-star-empty"></span>
         </div>
@@ -69,6 +69,7 @@
       const id = +e.target.getAttribute('id').replace('tab', '')
       const tab = tabs.get(id)
       tab.active = true
+      urlEl.value = tab.url
       ipcRenderer.send('tab-switch', { tabId: id })
       renderTabs()
     }
@@ -98,7 +99,7 @@
     }
     function gotoSite(e) {
       e.preventDefault()
-      ipcRenderer.send('goto-website', url.value)
+      ipcRenderer.send('goto-website', urlEl.value)
     }
     ipcRenderer.on('goto-website-done', (event, arg) => {
       if (arg.id) {
@@ -107,7 +108,7 @@
           const tab = tabs.get(arg.id)
           if (arg.url) {
             tab.url = arg.url
-            url.value = arg.url
+            urlEl.value = arg.url
           }
           if (arg.title) {
             tab.title = arg.title
