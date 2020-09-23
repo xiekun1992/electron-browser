@@ -33,18 +33,20 @@ function createContainerWindow () {
   // 并且为你的应用加载index.html
   win.loadFile('bar.html')
 
-  renderWindows.push(createRenderWindow(win))
-  currentRenderWindow = renderWindows[renderWindows.length - 1]
-
   containerWindows.push(win)
   currentContainerWindow = win
+  
+  win.webContents.on('did-finish-load', () => {
+    renderWindows.push(createRenderWindow(win))
+    currentRenderWindow = renderWindows[renderWindows.length - 1]
+  })
   // 打开开发者工具
   win.webContents.openDevTools()
   
   return win
 }
 
-function createRenderWindow(parentWindow) {
+function createRenderWindow(parentWindow, url) {
   const subwin = new BrowserWindow({
     frame: false,
     x: parentWindow.getPosition()[0] + windowBorder,
@@ -61,17 +63,43 @@ function createRenderWindow(parentWindow) {
       nodeIntegration: false // 需要关闭，不然容易和客户端js冲突
     }
   })
+  currentContainerWindow.send('tab-new', {
+    id: subwin.id
+  })
+  
   subwin.webContents.on('context-menu', (event, params) => {
     console.log(event, params)
   })
   subwin.webContents.on('will-navigate', (event, url) => {
-    console.log(event, url)
+    // console.log(event, url)
+    // currentContainerWindow.send('goto-website-done')
+  })
+  subwin.webContents.on('did-navigate', (event, url, httpResponseCode, httpStatusText) => {
+    // console.log(event, url, httpResponseCode, httpStatusText)
+    // console.log(subwin.getChildWindows())
   })
   subwin.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures, referrer, postBody) => {
-    console.log(event, url, frameName, disposition, options, additionalFeatures, referrer, postBody)
+    // console.log(event, url, frameName, disposition, options, additionalFeatures, referrer, postBody)
+    // console.log('child windows', subwin.getChildWindows())
+    event.preventDefault()
+    renderWindows.push(createRenderWindow(currentContainerWindow, url))
+    currentRenderWindow = renderWindows[renderWindows.length - 1]
   })
-  subwin.loadFile('index.html')
-  subwin.webContents.openDevTools()
+
+  subwin.on('page-title-updated', () => {
+    currentContainerWindow.send('goto-website-done', {
+      id: currentRenderWindow.id,
+      url: currentRenderWindow.webContents.getURL(),
+      title: currentRenderWindow.webContents.getTitle(),
+      history: currentRenderWindow.webContents.history,
+    })
+  })
+  if (url) {
+    subwin.webContents.loadURL(url)
+  } else {
+    subwin.loadFile('index.html')
+  }
+  // subwin.webContents.openDevTools()
   return subwin
 }
 function resizeWindow() {
@@ -109,16 +137,16 @@ Object.defineProperties(exportProps, {
     get () {
       return currentContainerWindow
     },
-    set () {
-      return false
+    set (val) {
+      currentContainerWindow = val
     }
   },
   currentRenderWindow: {
     get () {
       return currentRenderWindow
     },
-    set () {
-      return false
+    set (val) {
+      currentRenderWindow = val
     }
   }
 })

@@ -7,17 +7,17 @@ const {
   createRenderWindow
 } = window
 
-
 function init () {
   ipcMain.on('goto-website', (event, arg) => {
     console.log(arg, window)
     window.currentRenderWindow.loadURL(arg)
-    window.currentRenderWindow.once('page-title-updated', () => {
-      event.sender.send('goto-website-done', {
-        url: window.currentRenderWindow.webContents.getURL(),
-        title: window.currentRenderWindow.webContents.getTitle(),
-      })
-    })
+  })
+  ipcMain.on('tab-switch', (event, arg) => {
+    const win = window.currentContainerWindow.getChildWindows().find((win) => win.id === arg.tabId)
+    if (win) {
+      window.currentRenderWindow = win
+      win.show()
+    }
   })
   ipcMain.on('history-back', (event, arg) => {
     window.currentRenderWindow.webContents.goBack()

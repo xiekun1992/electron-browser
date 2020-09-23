@@ -10,15 +10,15 @@
 </head>
 <body>
   <header class="clearfix">
-    <ul class="tabs">
+    <ul class="tabs" id="tabsEl">
       <!-- <li class="tab-window left">新标签页</li> -->
-      <li class="tab-window active">新标签页</li>
+      <!-- <li class="tab-window active">新标签页</li> -->
       <!-- <li class="tab-window right">新标签页</li> -->
-      <li class="tab-add">
+      <!-- <li class="tab-add">
         <a class="ico-btn">
           <span class="icon-plus"></span>
         </a>
-      </li>
+      </li> -->
     </ul>
     <ul class="clearfix app-ops">
       <li id="minBtn"><a><span class="icon-minus"></span></a></li>
@@ -61,13 +61,71 @@
     const {
       ipcRenderer
     } = require('electron')
+    const tabs = new Map()
+    tabsEl.onclick = function(e) {
+      tabs.forEach((tab, id) => {
+        tab.active = false
+      })
+      const id = +e.target.getAttribute('id').replace('tab', '')
+      const tab = tabs.get(id)
+      tab.active = true
+      ipcRenderer.send('tab-switch', { tabId: id })
+      renderTabs()
+    }
+    function renderTabs() {
+      let html = ''
+      let activeFound = false
+      tabs.forEach((tab, id) => {
+        let pos = ''
+        if (tab.active) {
+          activeFound = true
+        }
+        if (!tab.active) {
+          pos = 'left'
+        } else if (!tab.active && !activeFound) {
+          pos = 'right'
+        } else {
+          pos = 'active'
+        }
+        html += `<li class="tab-window ${pos}" id="tab${id}">${tab.title || '新标签页'}</li>`
+      })
+      html += `<li class="tab-add">
+        <a class="ico-btn">
+          <span class="icon-plus"></span>
+        </a>
+      </li>`
+      tabsEl.innerHTML = html
+    }
     function gotoSite(e) {
       e.preventDefault()
       ipcRenderer.send('goto-website', url.value)
     }
     ipcRenderer.on('goto-website-done', (event, arg) => {
-      url.value = arg.url
-      document.querySelector('.tab-window.active').innerHTML = arg.title
+      if (arg.id) {
+        const el = document.querySelector('#tab' + arg.id)
+        if (el) {
+          const tab = tabs.get(arg.id)
+          if (arg.url) {
+            tab.url = arg.url
+            url.value = arg.url
+          }
+          if (arg.title) {
+            tab.title = arg.title
+            el.innerHTML = arg.title
+          }
+        }
+      }
+    })
+    ipcRenderer.on('tab-new', (event, arg) => {
+      tabs.forEach((tab, id) => {
+        tab.active = false
+      })
+      tabs.set(arg.id, {
+        active: true,
+        url: '',
+        title: ''
+      })
+      renderTabs()
     })
 
     minBtn.onclick = function() {
