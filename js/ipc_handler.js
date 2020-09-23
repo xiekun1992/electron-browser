@@ -1,10 +1,12 @@
 'use strict'
 
-const { ipcMain } = require('electron')
+const { ipcMain, BrowserWindow } = require('electron')
 const window = require('./window')
 const {
   createContainerWindow,
-  createRenderWindow
+  createRenderWindow,
+  addRenderWindow,
+  removeRenderWindow
 } = window
 
 function init () {
@@ -13,11 +15,34 @@ function init () {
     window.currentRenderWindow.loadURL(arg)
   })
   ipcMain.on('tab-switch', (event, arg) => {
-    const win = window.currentContainerWindow.getChildWindows().find((win) => win.id === arg.tabId)
+    const win = BrowserWindow.fromId(arg.tabId)
     if (win) {
       window.currentRenderWindow = win
       win.show()
+      window.currentContainerWindow.getChildWindows().forEach((hiddenWin) => {
+        if (win !== hiddenWin) {
+          hiddenWin.hide()
+        }
+      })
     }
+  })
+  ipcMain.on('tab-new-manual', (event, arg) => {
+    addRenderWindow()
+    window.currentContainerWindow.getChildWindows().forEach((hiddenWin) => {
+      if (window.currentRenderWindow !== hiddenWin) {
+        hiddenWin.hide()
+      }
+    })
+  })
+  ipcMain.on('tab-close-manual', (event, arg) => {
+    let win = BrowserWindow.fromId(arg.tabId)
+    win.once('closed', () => {
+      win.parent= null
+      removeRenderWindow()
+      event.sender.send('tab-closed', { tabId: arg.tabId})
+      win = null
+    })
+    win.close()
   })
   ipcMain.on('history-back', (event, arg) => {
     window.currentRenderWindow.webContents.goBack()

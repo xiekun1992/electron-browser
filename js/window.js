@@ -19,6 +19,7 @@ let currentContainerWindow = null
 function createContainerWindow () {   
   // 创建浏览器窗口
   const win = new BrowserWindow({
+    title: 'Electron-Browser',
     frame: false,
     width: defaultWindowSize.width,
     height: defaultWindowSize.height,
@@ -48,6 +49,7 @@ function createContainerWindow () {
 
 function createRenderWindow(parentWindow, url) {
   const subwin = new BrowserWindow({
+    title: 'Electron-Browser',
     frame: false,
     x: parentWindow.getPosition()[0] + windowBorder,
     y: parentWindow.getPosition()[1] + topbarHeight - windowBorder,
@@ -102,6 +104,20 @@ function createRenderWindow(parentWindow, url) {
   // subwin.webContents.openDevTools()
   return subwin
 }
+function addRenderWindow() {
+  const subwin = createRenderWindow(currentContainerWindow)
+  renderWindows.push(subwin)
+  currentRenderWindow = subwin
+  return subwin
+}
+function removeRenderWindow() {
+  for (let i = renderWindows.length - 1; i > -1 ; i--) {
+    const win = renderWindows[i]
+    if (win.isDestroyed()) {
+      renderWindows.splice(i, 1)
+    }
+  }
+}
 function resizeWindow() {
   // console.log(win.getSize(), win.getContentBounds())
   renderWindows.forEach((subwin) => {
@@ -153,4 +169,6 @@ Object.defineProperties(exportProps, {
 module.exports = Object.assign(exportProps, {
   createContainerWindow,
   createRenderWindow,
+  addRenderWindow,
+  removeRenderWindow,
 })

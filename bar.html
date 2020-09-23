@@ -63,15 +63,34 @@
     } = require('electron')
     const tabs = new Map()
     tabsEl.onclick = function(e) {
-      tabs.forEach((tab, id) => {
-        tab.active = false
-      })
-      const id = +e.target.getAttribute('id').replace('tab', '')
-      const tab = tabs.get(id)
-      tab.active = true
-      urlEl.value = tab.url
-      ipcRenderer.send('tab-switch', { tabId: id })
-      renderTabs()
+      for (const el of e.path) {
+        // 点击关闭tab
+        if (el.tagName.toLowerCase() === 'a' && el.classList.contains('tab-close-btn')) {
+          const tabId = +el.getAttribute('data-tab-id')
+          if (tabs.size > 1) {
+            ipcRenderer.send('tab-close-manual', { tabId })
+          } else {
+            ipcRenderer.send('app-close')
+          }
+          break
+        } else if (el.tagName.toLowerCase() === 'li') {
+          tabs.forEach((tab, id) => {
+            tab.active = false
+          })
+          const targetEl = el
+          const id = +targetEl.getAttribute('id').replace('tab', '')
+          if (id === -1) { // new tab
+            ipcRenderer.send('tab-new-manual')
+          } else {
+            const tab = tabs.get(id)
+            tab.active = true
+            urlEl.value = tab.url
+            ipcRenderer.send('tab-switch', { tabId: id })
+            renderTabs()
+          }
+          break
+        }
+      }
     }
     function renderTabs() {
       let html = ''
@@ -88,9 +107,12 @@
         } else {
           pos = 'active'
         }
-        html += `<li class="tab-window ${pos}" id="tab${id}">${tab.title || '新标签页'}</li>`
+        html += `<li class="tab-window ${pos}" id="tab${id}">
+          <span>${tab.title || '新标签页'}</span>
+          <a data-tab-id="${id}" class="tab-close-btn icon-cross"></a>
+        </li>`
       })
-      html += `<li class="tab-add">
+      html += `<li class="tab-add" id="tab-1">
         <a class="ico-btn">
           <span class="icon-plus"></span>
         </a>
@@ -112,8 +134,8 @@
           }
           if (arg.title) {
             tab.title = arg.title
-            el.innerHTML = arg.title
           }
+          renderTabs()
         }
       }
     })
@@ -127,6 +149,43 @@
         title: ''
       })
       renderTabs()
+    })
+    ipcRenderer.on('tab-closed', (event, arg) => {
+      // 查找下一个激活tab
+      if (tabs.get(arg.tabId).active) {
+        const ids = Array.from(tabs.keys())
+        for (let i = 0; i < ids.length; i++) {
+          const id = ids[i]
+          if (id === arg.tabId) {
+            const nextId = ids[i + 1]
+            const prevId = ids[i - 1]
+            let tab, activeTabId
+            if (nextId) {
+              tab = tabs.get(nextId)
+              activeTabId = nextId
+            } else if (prevId) {
+              tab = tabs.get(prevId)
+              activeTabId = prevId
+            } else { // 只打开了一个tab
+              ipcRenderer.send('app-close')
+              break
+            }
+            tabs.delete(arg.tabId)
+            tabs.forEach((tab, id) => {
+              tab.active = false
+            })
+
+            tab.active = true
+            urlEl.value = tab.url
+            ipcRenderer.send('tab-switch', { tabId: activeTabId })
+            renderTabs()
+            break
+          }
+        }
+      } else {
+        tabs.delete(arg.tabId)
+        renderTabs()
+      }
     })
 
     minBtn.onclick = function() {

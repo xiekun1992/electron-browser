@@ -51,7 +51,7 @@ ul, li {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  padding: 0 8px;
+  padding: 0 20px 0 8px;
   transition: background-color .3s;
   position: relative;
 }
@@ -60,7 +60,7 @@ ul, li {
 }
 .tabs>li.tab-window.active {
   background-color: #ffffff;
-  border: 1px solid #cccccc;
+  /* border: 1px solid #cccccc; */
   border-bottom: 0;
 }
 .tabs>li.tab-window.right::after {
@@ -80,6 +80,24 @@ ul, li {
   position: absolute;
   left: 0;
   bottom: 20%;
+}
+.tabs>li.tab-window>a {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  transition: background-color .3s;
+  border-radius: 50%;
+}
+.tabs>li.tab-window>a:hover,
+.tabs>li.tab-window>a:focus {
+  background-color: #bbb;
 }
 .tabs>li.tab-add {
   width: 30px;
