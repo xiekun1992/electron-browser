@@ -122,7 +122,7 @@ Object.defineProperties(exportProps, {
     }
   }
 })
-module.exports = Object.assign({
+module.exports = Object.assign(exportProps, {
   createContainerWindow,
   createRenderWindow,
-}, exportProps)
+})

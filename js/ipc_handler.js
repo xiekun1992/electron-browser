@@ -1,51 +1,51 @@
 'use strict'
 
 const { ipcMain } = require('electron')
+const window = require('./window')
 const {
   createContainerWindow,
-  createRenderWindow,
-  currentContainerWindow,
-  currentRenderWindow
-} = require('./window')
+  createRenderWindow
+} = window
+
 
 function init () {
   ipcMain.on('goto-website', (event, arg) => {
-    console.log(arg)
-    currentRenderWindow.loadURL(arg)
-    currentRenderWindow.once('page-title-updated', () => {
+    console.log(arg, window)
+    window.currentRenderWindow.loadURL(arg)
+    window.currentRenderWindow.once('page-title-updated', () => {
       event.sender.send('goto-website-done', {
-        url: currentRenderWindow.webContents.getURL(),
-        title: currentRenderWindow.webContents.getTitle(),
+        url: window.currentRenderWindow.webContents.getURL(),
+        title: window.currentRenderWindow.webContents.getTitle(),
       })
     })
   })
   ipcMain.on('history-back', (event, arg) => {
-    currentRenderWindow.webContents.goBack()
+    window.currentRenderWindow.webContents.goBack()
   })
   ipcMain.on('history-forward', (event, arg) => {
-    currentRenderWindow.webContents.goForward()
+    window.currentRenderWindow.webContents.goForward()
   })
   ipcMain.on('page-reload', (event, arg) => {
-    currentRenderWindow.webContents.reload()
+    window.currentRenderWindow.webContents.reload()
   })
   ipcMain.on('page-stop-loading', (event, arg) => {
-    currentRenderWindow.webContents.stop()
+    window.currentRenderWindow.webContents.stop()
   })
   ipcMain.on('goto-homepage', (event, arg) => {
-    currentRenderWindow.loadFile('index.html')
+    window.currentRenderWindow.loadFile('index.html')
   })
   ipcMain.on('app-minimize', (event, arg) => {
-    currentContainerWindow.minimize()
+    window.currentContainerWindow.minimize()
   })
   ipcMain.on('app-maximize', (event, arg) => {
-    if (currentContainerWindow.isMaximized()) {
-      currentContainerWindow.unmaximize()
+    if (window.currentContainerWindow.isMaximized()) {
+      window.currentContainerWindow.unmaximize()
     } else {
-      currentContainerWindow.maximize()
+      window.currentContainerWindow.maximize()
     }
   })
   ipcMain.on('app-close', (event, arg) => {
-    currentContainerWindow.close()
+    window.currentContainerWindow.close()
   })
 }
 
