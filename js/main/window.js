@@ -87,6 +87,10 @@ function createRenderWindow(parentWindow, url) {
     renderWindows.push(createRenderWindow(currentContainerWindow, url))
     currentRenderWindow = renderWindows[renderWindows.length - 1]
   })
+  subwin.webContents.on('page-favicon-updated', (event, favicons) => {
+    // console.log(favicons)
+    currentContainerWindow.send('favicon-list', { favicons })
+  })
 
   subwin.on('page-title-updated', () => {
     currentContainerWindow.send('goto-website-done', {
