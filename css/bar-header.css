@@ -33,6 +33,7 @@ ul, li {
   float: left;
 }
 .tabs {
+  --tabnum: 1;
   color: #767676;
   font-size: 14px;
   -webkit-app-region: drag;
@@ -47,11 +48,12 @@ ul, li {
   line-height: 30px;
 }
 .tabs>li.tab-window {
-  width: 200px;
+  width: calc(100% / var(--tabnum) - 180px / var(--tabnum));
+  max-width: 240px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  padding: 0 24px 0 8px;
+  padding: 0 24px 0 32px;
   transition: background-color .3s;
   position: relative;
 }
@@ -80,6 +82,25 @@ ul, li {
   position: absolute;
   left: 0;
   bottom: 20%;
+}
+.tabs>li.tab-window>span {
+  margin-top: 1px;
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.tabs>li.tab-window>.icon-earth,
+.tabs>li.tab-window>img {
+  font-size: 16px;
+  -webkit-user-drag: none; 
+  user-select: none;
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
 }
 .tabs>li.tab-window>a {
   width: 16px;

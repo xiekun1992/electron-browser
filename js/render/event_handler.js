@@ -1,3 +1,5 @@
+'use strict'
+
 tabsEl.onclick = function(e) {
   for (const el of e.path) {
     // 点击关闭tab

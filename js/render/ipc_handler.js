@@ -1,3 +1,5 @@
+'use strict'
+
 ipcRenderer.on('goto-website-done', (event, arg) => {
   if (arg.id) {
     const el = document.querySelector('#tab' + arg.id)
@@ -62,6 +64,18 @@ ipcRenderer.on('tab-closed', (event, arg) => {
     renderTabs()
   }
 })
-ipcRenderer.on('favicon-list', (event, arg) => {
+ipcRenderer.on('favicon-list', async (event, arg) => {
   // 尝试可用的favicon
+  let avail = false
+  for (let url of arg.favicons) {
+    try {
+      tabs.get(arg.tabId).favicon = await getFavicon(url)
+      avail = true
+      renderTabs()
+      break
+    } catch(e) {}
+  }
+  if (!avail) {
+    // document.querySelector(`#tab${arg.tabId}>img`).src = await getFavicon(url)
+  }
 })

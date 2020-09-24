@@ -89,7 +89,7 @@ function createRenderWindow(parentWindow, url) {
   })
   subwin.webContents.on('page-favicon-updated', (event, favicons) => {
     // console.log(favicons)
-    currentContainerWindow.send('favicon-list', { favicons })
+    currentContainerWindow.send('favicon-list', { favicons, tabId: subwin.id })
   })
 
   subwin.on('page-title-updated', () => {
