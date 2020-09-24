@@ -75,7 +75,4 @@ ipcRenderer.on('favicon-list', async (event, arg) => {
       break
     } catch(e) {}
   }
-  if (!avail) {
-    // document.querySelector(`#tab${arg.tabId}>img`).src = await getFavicon(url)
-  }
 })

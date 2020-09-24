@@ -8,12 +8,15 @@ function renderTabs() {
     if (tab.active) {
       activeFound = true
     }
-    if (!tab.active) {
+    if (!tab.active && !activeFound) {
       pos = 'left'
-    } else if (!tab.active && !activeFound) {
+    } else if (!tab.active && activeFound) {
       pos = 'right'
     } else {
       pos = 'active'
+    }
+    if (tab.url.startsWith('view-source:') || tab.url.startsWith('file:')) {
+      tab.favicon = ''  
     }
     html += `<li class="tab-window ${pos}" id="tab${id}">
       ${tab.favicon ? `<img src="${tab.favicon}">` : '<span class="icon-earth"></span>'}

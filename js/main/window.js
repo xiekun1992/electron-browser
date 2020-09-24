@@ -16,6 +16,11 @@ const containerWindows = []
 let currentRenderWindow = null
 let currentContainerWindow = null
 
+const contextmenu = require('./contextmenu')
+contextmenu.init({
+  addRenderWindow
+})
+
 function createContainerWindow () {   
   // 创建浏览器窗口
   const win = new BrowserWindow({
@@ -41,13 +46,17 @@ function createContainerWindow () {
     renderWindows.push(createRenderWindow(win))
     currentRenderWindow = renderWindows[renderWindows.length - 1]
   })
+  win.webContents.on('context-menu', (event, params) => {
+    // console.log(event, params)
+    contextmenu.showInContainer(params)
+  })
   // 打开开发者工具
   win.webContents.openDevTools()
   
   return win
 }
 
-function createRenderWindow(parentWindow, url) {
+function createRenderWindow(parentWindow = currentContainerWindow, url) {
   const subwin = new BrowserWindow({
     title: 'Electron-Browser',
     frame: false,
@@ -70,19 +79,14 @@ function createRenderWindow(parentWindow, url) {
   })
   
   subwin.webContents.on('context-menu', (event, params) => {
-    console.log(event, params)
+    // console.log(event, params)
+    contextmenu.showInRender(params)
   })
   subwin.webContents.on('will-navigate', (event, url) => {
-    // console.log(event, url)
-    // currentContainerWindow.send('goto-website-done')
   })
   subwin.webContents.on('did-navigate', (event, url, httpResponseCode, httpStatusText) => {
-    // console.log(event, url, httpResponseCode, httpStatusText)
-    // console.log(subwin.getChildWindows())
   })
   subwin.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures, referrer, postBody) => {
-    // console.log(event, url, frameName, disposition, options, additionalFeatures, referrer, postBody)
-    // console.log('child windows', subwin.getChildWindows())
     event.preventDefault()
     renderWindows.push(createRenderWindow(currentContainerWindow, url))
     currentRenderWindow = renderWindows[renderWindows.length - 1]
@@ -93,23 +97,33 @@ function createRenderWindow(parentWindow, url) {
   })
 
   subwin.on('page-title-updated', () => {
+    // console.log(currentRenderWindow.webContents.getURL(), currentRenderWindow.webContents.getTitle())
     currentContainerWindow.send('goto-website-done', {
       id: currentRenderWindow.id,
-      url: currentRenderWindow.webContents.getURL(),
-      title: currentRenderWindow.webContents.getTitle(),
+      url: currentRenderWindow.webContents.getURL() || url,
+      title: currentRenderWindow.webContents.getTitle() || url,
       history: currentRenderWindow.webContents.history,
     })
   })
+  // console.log(url)
   if (url) {
     subwin.webContents.loadURL(url)
+    if (url.startsWith('view-source:')) {
+      currentContainerWindow.send('goto-website-done', {
+        id: subwin.id,
+        url: url,
+        title: url,
+        history: null,
+      })
+    }
   } else {
     subwin.loadFile('index.html')
   }
   // subwin.webContents.openDevTools()
   return subwin
 }
-function addRenderWindow() {
-  const subwin = createRenderWindow(currentContainerWindow)
+function addRenderWindow(url) {
+  const subwin = createRenderWindow(currentContainerWindow, url)
   renderWindows.push(subwin)
   currentRenderWindow = subwin
   return subwin
