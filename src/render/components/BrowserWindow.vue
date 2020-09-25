@@ -81,6 +81,10 @@ export default {
     }
   },
   mounted() {
+    // setTimeout(() => {
+    //   this.$refs.webview.openDevTools()
+    //   this.$refs.webview.executeJavaScript('window.addEventListener("contextmenu", function(e) {console.log(e)})')
+    // }, 1000)
     this.$refs.webview.addEventListener('load-commit', this.loading)
     // this.$refs.webview.addEventListener('did-start-loading', () => {
     //   const title = '正在加载'
