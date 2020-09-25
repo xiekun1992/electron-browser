@@ -1,0 +1,35 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Electron-Browser</title><style>* {
+      box-sizing: border-box;
+    }
+    ul, li {
+      padding: 0;
+      margin: 0;
+      float: left;
+    }
+    body {
+      margin: 0;
+    }
+    .container {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .container>main {
+      height: 100%;
+      position: relative;
+    }
+    .webview,
+    webview {
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      background-color: #fff;
+      z-index: 1;
+    }
+    .webview.active {
+      z-index: 10;
+    }</style></head><body><div id="app"></div><script src="bundle.js"></script></body></html>

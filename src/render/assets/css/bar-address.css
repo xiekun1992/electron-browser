@@ -1,4 +1,4 @@
-main {
+header>section {
     display: inline-grid;
     width: 100%;
     grid-template-columns: 120px auto 36px;
@@ -6,13 +6,13 @@ main {
     background-color: #ffffff;
     border-bottom: 1px solid #cccccc;
 }
-main>form>div {
+header>section>form>div {
     /* border-radius: 20px; */
     /* padding: 0 3px; */
     background-color: #eee;
     transition: background-color .3s;
 }
-main > form input {
+header>section > form input {
     border-left: 1px solid #000;
     display: inline-block;
     width: calc(100% - 56px);
@@ -22,7 +22,7 @@ main > form input {
     outline: 0;
     background-color: transparent;
 }
-main > form > div:hover {
+header>section > form > div:hover {
     background-color: #dedede;
 }
 .address-tip>.icon-lock {

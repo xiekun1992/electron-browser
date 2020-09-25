@@ -6,7 +6,7 @@ body {
   margin: 0;
   background: #fff;
   /* background: #007fff; */
-  margin: 2px;
+  /* margin: 2px; */
 }
 ul, li {
   margin: 0;
@@ -28,6 +28,9 @@ ul, li {
   height: 0;
   overflow: hidden;
 }
+header {
+  background-color: #eeeeee;
+}
 .tabs,
 .tabs>li {
   float: left;
@@ -37,9 +40,10 @@ ul, li {
   color: #767676;
   font-size: 14px;
   -webkit-app-region: drag;
-  width: 100%;
-  padding: 7px 10px 0 10px;
+  width: calc(100% - 6px);
+  margin: 3px 3px 0 3px;
   background-color: #eeeeee;
+  padding: 4px 7px 0 7px;
 }
 .tabs>li {
   user-select: none;
@@ -54,7 +58,7 @@ ul, li {
   text-overflow: ellipsis;
   overflow: hidden;
   padding: 0 24px 0 32px;
-  transition: background-color .3s;
+  transition: background-color .1s;
   position: relative;
 }
 .tabs>li.tab-window:hover {
@@ -132,8 +136,8 @@ ul, li {
 .app-ops {
   -webkit-app-region: no-drag;
   position: fixed;
-  top: 2px;
-  right: 2px;
+  top: 0;
+  right: 0;
 }
 .app-ops>li {
   width: 40px;
