@@ -32,36 +32,83 @@ export default {
           reject()
         }
       })
-    }
-  },
-  mounted() {
-    this.$refs.webview.addEventListener('load-commit', () => {
+    },
+    loading() {
       const title = '正在加载'
       this.$emit('update:title', title)
-    })
-    // this.$refs.webview.addEventListener('did-start-loading', () => {
-    //   const title = '正在加载'
-    //   this.$emit('update:title', title)
-    // })
-    this.$refs.webview.addEventListener('page-title-updated', () => {
+    },
+    pageTitleUpdated() {
       const title = this.$refs.webview.getTitle()
       this.$emit('update:title', title)
-    })
-    // this.$refs.webview.addEventListener('did-stop-loading', () => {
-    //   const title = this.$refs.webview.getTitle()
-    //   this.$emit('update:title', title)
-    // })
-    this.$refs.webview.addEventListener('new-window', async (e) => {
+    },
+    newWindow(e) {
       this.$emit('initWebview', e.url)
-    })
-    this.$refs.webview.addEventListener('page-favicon-updated', async (e) => {
+    },
+    async pageFaviconUpdatedasync(e) {
       for (let url of e.favicons) {
         try {
           this.$emit('update:favicon', await this.getFavicon(url))
           break
         } catch(e) {}
       }
-    })
+    },
+    pageReload() {
+      if (this.view.active) {
+        this.$refs.webview.reload()
+      }
+    },
+    historyForward() {
+      if (this.view.active && this.$refs.webview.canGoForward()) {
+        this.$refs.webview.goForward()
+      }
+    },
+    historyBack() {
+      if (this.view.active && this.$refs.webview.canGoBack()) {
+        this.$refs.webview.goBack()
+      }
+    },
+    homepage() {
+      if (this.view.active) {
+        this.view.src = this.view.homepage
+        this.$refs.webview.loadURL(this.view.homepage)
+      }
+    },
+    gotoSite(url) {
+      if (this.view.active) {
+        this.view.src = url
+        this.$refs.webview.loadURL(url)
+      }
+    }
+  },
+  mounted() {
+    this.$refs.webview.addEventListener('load-commit', this.loading)
+    // this.$refs.webview.addEventListener('did-start-loading', () => {
+    //   const title = '正在加载'
+    //   this.$emit('update:title', title)
+    // })
+    this.$refs.webview.addEventListener('page-title-updated', this.pageTitleUpdated)
+    this.$refs.webview.addEventListener('did-stop-loading', this.pageTitleUpdated)
+    this.$refs.webview.addEventListener('new-window', this.newWindow)
+    this.$refs.webview.addEventListener('page-favicon-updated', this.pageFaviconUpdatedasync)
+
+    this.$root.$on('page-reload', this.pageReload)
+    this.$root.$on('history-forward', this.historyForward)
+    this.$root.$on('history-back', this.historyBack)
+    this.$root.$on('homepage', this.homepage)
+    this.$root.$on('goto-site', this.gotoSite)
+  },
+  beforeDestroy() {
+    this.$refs.webview.removeEventListener('load-commit', this.loading)
+    this.$refs.webview.removeEventListener('page-title-updated', this.pageTitleUpdated)
+    this.$refs.webview.removeEventListener('did-stop-loading', this.pageTitleUpdated)
+    this.$refs.webview.removeEventListener('new-window', this.newWindow)
+    this.$refs.webview.removeEventListener('page-favicon-updated', this.pageFaviconUpdatedasync)
+
+    this.$root.$off('page-reload', this.pageReload)
+    this.$root.$off('history-forward', this.historyForward)
+    this.$root.$off('history-back', this.historyBack)
+    this.$root.$off('homepage', this.homepage)
+    this.$root.$off('goto-site', this.gotoSite)
   }
 }
 </script>

@@ -32,7 +32,7 @@
           <div class="address-tip pull-left ico-btn">
             <span class="icon-lock"></span>
           </div>
-          <input type="text" id="urlEl" spellcheck="false">
+          <input type="text" id="urlEl" v-model="url" spellcheck="false">
           <div class="address-tip pull-right ico-btn">
             <span class="icon-star-empty"></span>
           </div>
@@ -59,6 +59,25 @@ export default {
       default: () => []
     }
   },
+  data() {
+    return {
+      url: ''
+    }
+  },
+  watch: {
+    webviews: {
+      deep: true,
+      immediate: true,
+      handler(val) {
+        for (const view of this.webviews) {
+          if (view.active) {
+            this.url = view.src
+            break
+          }
+        }
+      }
+    }
+  },
   methods: {
     closeTab(view) {
       this.$emit('closeTab', view)
@@ -78,11 +97,24 @@ export default {
     closeApp() {
       ipcRenderer.send('app-quit')
     },
-    homepage() {},
-    historyBack() {},
-    historyForward() {},
-    pageReload() {},
-    gotoSite() {}
+    homepage() {
+      this.$root.$emit('homepage')
+    },
+    historyBack() {
+      this.$root.$emit('history-back')
+    },
+    historyForward() {
+      this.$root.$emit('history-forward')
+    },
+    pageReload() {
+      this.$root.$emit('page-reload')
+    },
+    gotoSite() {
+      if (!this.url) {
+        return
+      }
+      this.$root.$emit('goto-site', this.url)
+    }
   }
 }
 </script>

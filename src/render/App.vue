@@ -12,6 +12,7 @@
         :class="{active: view.active}"
         v-for="(view) in webviews"
         :key="view.id"
+        :view="view"
         :url.sync="view.src"
         :favicon.sync="view.favicon"
         :title.sync="view.title"
@@ -40,6 +41,9 @@ export default {
       webviews: [],
       activeWebview: null,
       id: 1,
+      baseWebview: {
+        homepage: 'https://www.baidu.com'
+      }
     }
   },
   methods: {
@@ -50,7 +54,7 @@ export default {
       view.active = true
     },
     addTab() {
-      this.initWebview('https://www.baidu.com')
+      this.initWebview()
     },
     closeTab(view) {
       if (this.webviews.length === 1) {
@@ -73,13 +77,16 @@ export default {
       }
     },
     initWebview(url) {
-      const webview = {
+      const webview = Object.create({
         id: this.id++,
         active: true,
-        src: url,
+        src: '',
         title: '新标签页',
         favicon: ''
-      }
+      })
+      Object.setPrototypeOf(webview, this.baseWebview)
+      webview.src = url || webview.homepage
+      
       this.switchTab(webview)
       this.webviews.push(webview)
     }
