@@ -1,9 +1,13 @@
 <template>
   <div>
-    <webview ref="webview" :src="url"></webview>
+    <webview ref="webview" :src="url" :preload="view.preloadScript"></webview>
   </div>
 </template>
 <script>
+const {
+  ipcRenderer
+} = require('electron')
+
 export default {
   name: 'BrowserWindow',
   props: {
@@ -15,9 +19,18 @@ export default {
       type: String,
       default: ''
     },
+    favicon: {
+      type: String,
+      default: ''
+    },
     view: {
       type: Object,
       default: () => {}
+    }
+  },
+  data() {
+    return {
+      preloadScript: ''
     }
   },
   methods: {
@@ -78,6 +91,9 @@ export default {
         this.view.src = url
         this.$refs.webview.loadURL(url)
       }
+    },
+    didNavigate(e) {
+      this.$emit('update:url', e.url)
     }
   },
   mounted() {
@@ -94,6 +110,18 @@ export default {
     this.$refs.webview.addEventListener('did-stop-loading', this.pageTitleUpdated)
     this.$refs.webview.addEventListener('new-window', this.newWindow)
     this.$refs.webview.addEventListener('page-favicon-updated', this.pageFaviconUpdatedasync)
+    // this.$refs.webview.addEventListener('dom-ready', () => {
+    //     this.$refs.webview.openDevTools()
+    // })
+    this.$refs.webview.addEventListener('did-navigate-in-page', this.didNavigate)
+    this.$refs.webview.addEventListener('did-navigate', this.didNavigate)
+
+    this.$refs.webview.addEventListener('ipc-message', event => {
+      const options = JSON.parse(event.channel)
+      options.y += 82
+      ipcRenderer.send('contextmenu-show', options)
+    })
+
 
     this.$root.$on('page-reload', this.pageReload)
     this.$root.$on('history-forward', this.historyForward)

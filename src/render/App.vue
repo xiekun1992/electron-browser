@@ -42,8 +42,10 @@ export default {
       activeWebview: null,
       id: 1,
       baseWebview: {
-        homepage: 'https://www.baidu.com'
-      }
+        homepage: 'https://zh.foxhentai.com/',
+        preloadScript: ''
+        // homepage: 'https://www.baidu.com'
+      },
     }
   },
   methods: {
@@ -82,17 +84,27 @@ export default {
         active: true,
         src: '',
         title: '新标签页',
-        favicon: ''
+        favicon: '',
       })
       Object.setPrototypeOf(webview, this.baseWebview)
       webview.src = url || webview.homepage
       
       this.switchTab(webview)
       this.webviews.push(webview)
+    },
+    newWindow(event, arg) {
+      this.initWebview(arg.url)
     }
+  },
+  created() {
+    this.baseWebview.preloadScript = `file://${ipcRenderer.sendSync('app-root-path')}`
+    ipcRenderer.on('new-window', this.newWindow)
   },
   mounted() {
     this.addTab()
+  },
+  beforeDestroy() {
+    ipcRenderer.off('new-window', this.newWindow)
   }
 }
 </script>

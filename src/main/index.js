@@ -1,4 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
+const path = require('path')
+const { showInRender } = require('./contextmenu')
 
 let win
 
@@ -45,6 +47,12 @@ app.on('activate', () => {
 
 // 您可以把应用程序其他的流程写在在此文件中
 // 代码 也可以拆分成几个文件，然后用 require 导入。
+ipcMain.on('app-root-path', (event) => {
+  event.returnValue = path.resolve(__dirname, 'js/contextmenu.js')
+})
+ipcMain.on('contextmenu-show', (event, arg) => {
+  showInRender(arg)
+})
 ipcMain.on('app-minimize', (event, arg) => {
   win.minimize()
 })
