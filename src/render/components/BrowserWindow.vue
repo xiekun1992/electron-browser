@@ -173,7 +173,8 @@ export default {
 </script>
 <style scoped>
 .webview-container {
-  position: relative;
+  position: absolute;
+  background: #fff;
 }
 .link-hint {
   position: absolute;
