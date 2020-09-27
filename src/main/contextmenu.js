@@ -47,6 +47,12 @@ const devMenuItems = [
     browserWindow.webContents.send('open-devtools')
   } }),
 ]
+const textMenuItems = [
+  new MenuItem({ id: 52, visible: true, label: '复制', click(menuItem, browserWindow, event) {
+    clipboard.writeText(contextmenuPositionOptions.contents.text)
+  } }),
+  new MenuItem({ id: 50, visible: true, type: 'separator' })
+]
 function showInRender(options) {
   contextmenuPositionOptions = options
   console.log(options)
@@ -57,13 +63,19 @@ function showInRender(options) {
   if (options.contents.image) {
     imageMenuItems.forEach(item => renderMenu.append(item))
   }
+  if (options.contents.text) {
+    textMenuItems.forEach(item => renderMenu.append(item))
+  }
   if (renderMenu.items.length === 0) {
     pageMenuItems.forEach(item => renderMenu.append(item))
   }
   devMenuItems.forEach(item => renderMenu.append(item))
 
   renderMenu.once('menu-will-close', (event) => {
-    contextmenuPositionOptions = null
+    const timer = setTimeout(() => {
+      clearTimeout(timer)
+      contextmenuPositionOptions = null
+    }, 100)
   })
   renderMenu.popup({
     x: options.x,

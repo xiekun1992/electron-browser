@@ -20,6 +20,11 @@ window.addEventListener('contextmenu', (e) => {
             case 'video': break
             case 'audio': break
         }
+        // selected text
+        const selectedText = window.getSelection().toString()
+        if (selectedText) {
+            contents['text'] = selectedText
+        }
     })
     ipcRenderer.sendToHost(JSON.stringify({
         x: e.x,
