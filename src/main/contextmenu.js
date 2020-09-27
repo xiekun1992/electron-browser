@@ -25,10 +25,6 @@ const imageMenuItems = [
       url: contextmenuPositionOptions.contents.image
     })
    } }),
-  new MenuItem({ id: 2, visible: true, label: '图片另存为', click() { console.log('item 1 clicked') } }),
-  new MenuItem({ id: 3, visible: true, label: '复制图片', click() { 
-    // clipboard.writeImage(nativeImage.createFromPath(contextmenuPositionOptions.contents.image))
-   } }),
   new MenuItem({ id: 4, visible: true, label: '复制图片地址', click() { 
     clipboard.writeText(contextmenuPositionOptions.contents.image)
    } }),
@@ -36,58 +32,20 @@ const imageMenuItems = [
 ]
 const pageMenuItems = [
   new MenuItem({ id: 21, visible: true, label: '返回', click(menuItem, browserWindow, event) {
-    browserWindow.webContents.goBack()
+    browserWindow.webContents.send('history-back')
   } }),
   new MenuItem({ id: 22, visible: true, label: '前进', click(menuItem, browserWindow, event) {
-    browserWindow.webContents.goForward()
+    browserWindow.webContents.send('history-forward')
   } }),
-  new MenuItem({ id: 23, visible: true, role: 'reload', label: '重新加载' }),
-  new MenuItem({ id: 30, visible: true, type: 'separator' }),
-  
-  new MenuItem({ id: 41, visible: true, label: '另存为', click(menuItem, browserWindow, event) {
-  dialog.showSaveDialog({
-    title: '另存为',
-    filters: [
-      {
-        name: '网页, 仅HTML (*.html;*.htm)',
-        extensions: [
-          'html','htm'
-        ]
-      },
-      {
-        name: '网页 (单个文件) (*.mhtml)',
-        extensions: ['mhtml']
-      },
-      {
-        name: '网页, 全部 (*.htm;*.html)',
-        extensions: ['htm', 'html']
-      }
-    ]
-  }).then(function(result) {
-    if (!result.canceled) {
-      let saveType = ''
-      switch (result.filePath.split('.').pop()) {
-        case 'html': saveType = 'HTMLOnly'; break
-        case 'mhtml': saveType = 'MHTML'; break
-        case 'htm': saveType = 'HTMLComplete'; break
-      }
-      browserWindow.webContents.savePage(result.filePath, saveType)
-    }
-  })
+  new MenuItem({ id: 23, visible: true, label: '重新加载', click(menuItem, browserWindow, event) {
+    browserWindow.webContents.send('page-reload')
   } }),
-  new MenuItem({ id: 42, visible: true, label: '打印', click(menuItem, browserWindow, event) {
-  browserWindow.webContents.print()
-  } }),
-  new MenuItem({ id: 50, visible: true, type: 'separator' }),
-  new MenuItem({ id: 51, visible: true, label: '查看网页源代码', click(menuItem, browserWindow, event) {
-    if (browserWindow) {
-      const url = `view-source:${browserWindow.webContents.getURL()}`
-      createRenderWindow(url)
-    }
-  } }),
+  new MenuItem({ id: 50, visible: true, type: 'separator' })
 ]
 const devMenuItems = [
-  new MenuItem({ id: 52, visible: true, role: 'toggleDevTools', label: '检查' }),
+  new MenuItem({ id: 52, visible: true, label: '检查', click(menuItem, browserWindow, event) {
+    browserWindow.webContents.send('open-devtools')
+  } }),
 ]
 function showInRender(options) {
   contextmenuPositionOptions = options
@@ -104,6 +62,9 @@ function showInRender(options) {
   }
   devMenuItems.forEach(item => renderMenu.append(item))
 
+  renderMenu.once('menu-will-close', (event) => {
+    contextmenuPositionOptions = null
+  })
   renderMenu.popup({
     x: options.x,
     y: options.y,
