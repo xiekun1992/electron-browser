@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, session } = require('electron')
 const path = require('path')
 const { showInRender } = require('./contextmenu')
 
@@ -19,7 +19,36 @@ function createWindow () {
   // 并且为你的应用加载index.html
   win.loadURL('http://localhost:2000')
   // win.loadFile('../render/dist/index.html')
-
+  // session.defaultSession.webRequest.onBeforeRequest(function(details, callback) {
+  //   console.log(details.url)
+  //   callback({
+  //     requestHeaders: details.requestHeaders
+  //   })
+  // })
+  session.defaultSession.on('will-download', (event, item, webContents) => {
+    // event.preventDefault()
+    // require('request')(item.getURL(), (data) => {
+    //   require('fs').writeFileSync('/somewhere', data)
+    // })
+    item.on('updated', (event, state) => {
+      if (state === 'interrupted') {
+        console.log('Download is interrupted but can be resumed')
+      } else if (state === 'progressing') {
+        if (item.isPaused()) {
+          console.log('Download is paused')
+        } else {
+          console.log(`Received bytes: ${item.getReceivedBytes()}`)
+        }
+      }
+    })
+    item.once('done', (event, state) => {
+      if (state === 'completed') {
+        console.log('Download successfully')
+      } else {
+        console.log(`Download failed: ${state}`)
+      }
+    })
+  })
   // 打开开发者工具
   win.webContents.openDevTools()
 }
