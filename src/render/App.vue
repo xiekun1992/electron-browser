@@ -91,14 +91,10 @@ export default {
       
       this.switchTab(webview)
       this.webviews.push(webview)
-    },
-    newWindow(event, arg) {
-      this.initWebview(arg.url)
     }
   },
   created() {
     this.baseWebview.preloadScript = `file://${ipcRenderer.sendSync('app-root-path')}`
-    ipcRenderer.on('new-window', this.newWindow)
   },
   mounted() {
     this.addTab()
