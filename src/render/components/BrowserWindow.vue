@@ -1,6 +1,7 @@
 <template>
-  <div>
+  <div class="webview-container">
     <webview ref="webview" :src="url" :preload="view.preloadScript"></webview>
+    <div class="link-hint" :class="{show: !!hoverLink}">{{hoverLink}}</div>
   </div>
 </template>
 <script>
@@ -30,7 +31,8 @@ export default {
   },
   data() {
     return {
-      preloadScript: ''
+      preloadScript: '',
+      hoverLink: ''
     }
   },
   methods: {
@@ -94,6 +96,16 @@ export default {
     },
     didNavigate(e) {
       this.$emit('update:url', e.url)
+    },
+    ipcNewWindow(event, arg) {
+      if (this.view.active) {
+        this.newWindow(arg)
+      }
+    },
+    openDevTools() {
+      if (this.view.active) {
+        this.$refs.webview.openDevTools()
+      }
     }
   },
   mounted() {
@@ -110,16 +122,19 @@ export default {
     this.$refs.webview.addEventListener('did-stop-loading', this.pageTitleUpdated)
     this.$refs.webview.addEventListener('new-window', this.newWindow)
     this.$refs.webview.addEventListener('page-favicon-updated', this.pageFaviconUpdatedasync)
-    // this.$refs.webview.addEventListener('dom-ready', () => {
-    //     this.$refs.webview.openDevTools()
-    // })
     this.$refs.webview.addEventListener('did-navigate-in-page', this.didNavigate)
     this.$refs.webview.addEventListener('did-navigate', this.didNavigate)
 
+    // this.$refs.webview.addEventListener('dom-ready', () => {
+    //     this.$refs.webview.openDevTools()
+    // })
     this.$refs.webview.addEventListener('ipc-message', event => {
       const options = JSON.parse(event.channel)
       options.y += 82
       ipcRenderer.send('contextmenu-show', options)
+    })
+    this.$refs.webview.addEventListener('update-target-url', (event) => {
+      this.hoverLink = event.url
     })
 
 
@@ -128,6 +143,12 @@ export default {
     this.$root.$on('history-back', this.historyBack)
     this.$root.$on('homepage', this.homepage)
     this.$root.$on('goto-site', this.gotoSite)
+
+    ipcRenderer.on('open-devtools', this.openDevTools)
+    ipcRenderer.on('new-window', this.ipcNewWindow)
+    ipcRenderer.on('history-forward', this.historyForward)
+    ipcRenderer.on('history-back', this.historyBack)
+    ipcRenderer.on('page-reload', this.pageReload)
   },
   beforeDestroy() {
     this.$refs.webview.removeEventListener('load-commit', this.loading)
@@ -141,9 +162,34 @@ export default {
     this.$root.$off('history-back', this.historyBack)
     this.$root.$off('homepage', this.homepage)
     this.$root.$off('goto-site', this.gotoSite)
+
+    ipcRenderer.off('open-devtools', this.openDevTools)
+    ipcRenderer.off('new-window', this.ipcNewWindow)
+    ipcRenderer.off('history-forward', this.historyForward)
+    ipcRenderer.off('history-back', this.historyBack)
+    ipcRenderer.off('page-reload', this.pageReload)
   }
 }
 </script>
-<style>
-
+<style scoped>
+.webview-container {
+  position: relative;
+}
+.link-hint {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  font-size: 12px;
+  color: #888;
+  z-index: 99999;
+  background: #fff;
+  border-radius: 0 5px 0 0;
+  opacity: 0;
+  /* transition: opacity .5s; */
+  pointer-events: none;
+}
+.link-hint.show {
+  padding: 4px 10px;
+  opacity: 1;
+}
 </style>
