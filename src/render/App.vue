@@ -42,9 +42,9 @@ export default {
       activeWebview: null,
       id: 1,
       baseWebview: {
-        homepage: 'https://zh.foxhentai.com/',
+        // homepage: 'https://zh.foxhentai.com/',
+        homepage: 'https://www.baidu.com',
         preloadScript: ''
-        // homepage: 'https://www.baidu.com'
       },
     }
   },

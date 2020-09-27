@@ -57,7 +57,8 @@ export default {
       this.$emit('update:title', title)
     },
     newWindow(e) {
-      this.$emit('initWebview', e.url)
+      console.log(e.url, e.frameName, e.disposition, e.options)
+      this.$emit('initWebview', this.hoverLink || e.url)
     },
     async pageFaviconUpdatedasync(e) {
       for (let url of e.favicons) {
@@ -188,6 +189,7 @@ export default {
   opacity: 0;
   /* transition: opacity .5s; */
   pointer-events: none;
+  word-break: break-all;
 }
 .link-hint.show {
   padding: 4px 10px;
