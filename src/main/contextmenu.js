@@ -21,7 +21,7 @@ const linkMenuItems = [
   new MenuItem({ id: 20, visible: true, type: 'separator' }),
 ]
 const imageMenuItems = [
-  new MenuItem({ id: 1, visible: true, label: '在新标签页中打开图片', click() { 
+  new MenuItem({ id: 1, visible: true, label: '在新标签页中打开图片', click(menuItem, browserWindow, event) { 
     browserWindow.webContents.send('new-window', {
       url: contextmenuPositionOptions.contents.image
     })
