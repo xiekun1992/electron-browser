@@ -7,6 +7,7 @@ const {
 } = require('electron')
 
 let contextmenuPositionOptions
+let timer
 
 const linkMenuItems = [
   new MenuItem({ id: 11, visible: true, label: '在新标签页中打开链接', click(menuItem, browserWindow, event) {
@@ -57,6 +58,15 @@ function showInRender(options) {
   contextmenuPositionOptions = options
   console.log(options)
   const renderMenu = new Menu()
+  renderMenu.once('menu-will-show', (event) => {
+    clearTimeout(timer)
+  })
+  renderMenu.once('menu-will-close', (event) => {
+    timer = setTimeout(() => {
+      clearTimeout(timer)
+      contextmenuPositionOptions = null
+    }, 100)
+  })
   if (options.contents.link) {
     linkMenuItems.forEach(item => renderMenu.append(item))
   }
@@ -70,13 +80,6 @@ function showInRender(options) {
     pageMenuItems.forEach(item => renderMenu.append(item))
   }
   devMenuItems.forEach(item => renderMenu.append(item))
-
-  renderMenu.once('menu-will-close', (event) => {
-    const timer = setTimeout(() => {
-      clearTimeout(timer)
-      contextmenuPositionOptions = null
-    }, 100)
-  })
   renderMenu.popup({
     x: options.x,
     y: options.y,
