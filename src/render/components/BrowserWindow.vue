@@ -58,7 +58,15 @@ export default {
     },
     newWindow(e) {
       console.log(e.url, e.frameName, e.disposition, e.options)
-      this.$emit('initWebview', this.hoverLink || e.url)
+        this.$emit('initWebview', e.url)
+      // if ((this.hoverLink && e.url !== 'about:blank') || !this.hoverLink) {
+      //   this.$emit('initWebview', e.url)
+      //   return
+      // }
+      // if (!this.hoverLink  && e.url === 'about:blank') {
+      //   this.$emit('initWebview', this.hoverLink)
+      //   return
+      // }
     },
     async pageFaviconUpdatedasync(e) {
       for (let url of e.favicons) {

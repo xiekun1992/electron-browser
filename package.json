@@ -1,18 +1,53 @@
 {
-  "name": "wv",
+  "name": "electron-browser",
   "version": "1.0.0",
-  "description": "",
+  "description": "custom browser using electron",
+  "author": "xkfront",
+  "homepage": "https://xiekun1992.github.io/",
+  "build": {
+    "copyright": "Copyright © 2020 xkfront",
+    "appId": "me.xk.electron-browser",
+    "electronDownload": {
+      "mirror": "https://npm.taobao.org/mirrors/electron/"
+    },
+    "files": [
+      "!**/node_modules/**/*",
+      "!src/render/assets/",
+      "!src/render/components/",
+      "!src/render/*.vue",
+      "!src/render/*.js",
+      "!src/render/*.html",
+      "!webpack.config.js",
+      "!logo.ico"
+    ],
+    "win": {
+      "icon": "./logo.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    }
+  },
+  "main": "./src/main/index.js",
   "scripts": {
-    "start": "electron ./src/main/index.js",
+    "start": "electron ./src/main/index.js --dev",
     "dev": "webpack && webpack-dev-server",
+    "release:win": "electron-builder --win --ia32",
+    "release:mac": "electron-builder --mac --ia32",
+    "release:linux": "electron-builder --linux --ia32",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
   "license": "ISC",
   "devDependencies": {
     "css-loader": "^4.3.0",
     "electron": "^10.1.2",
+    "electron-builder": "^22.8.1",
     "file-loader": "^6.1.0",
     "html-webpack-plugin": "^4.5.0",
     "style-loader": "^1.2.1",

@@ -94,7 +94,7 @@ export default {
     }
   },
   created() {
-    this.baseWebview.preloadScript = `file://${ipcRenderer.sendSync('app-root-path')}`
+    this.baseWebview.preloadScript = ipcRenderer.sendSync('app-root-path')
   },
   mounted() {
     this.addTab()

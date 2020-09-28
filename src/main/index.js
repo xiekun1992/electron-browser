@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, session } = require('electron')
 const path = require('path')
 const { showInRender } = require('./contextmenu')
 
+const isProd = process.argv.includes('--dev') ? false : true
 let win
 
 function createWindow () {   
@@ -15,10 +16,6 @@ function createWindow () {
       webviewTag: true
     },
   })
-
-  // 并且为你的应用加载index.html
-  win.loadURL('http://localhost:2000')
-  // win.loadFile('../render/dist/index.html')
   // session.defaultSession.webRequest.onBeforeRequest(function(details, callback) {
   //   console.log(details.url)
   //   callback({
@@ -49,8 +46,14 @@ function createWindow () {
       }
     })
   })
-  // 打开开发者工具
-  win.webContents.openDevTools()
+  // 并且为你的应用加载index.html
+  if (isProd) {
+    win.loadFile(path.resolve(__dirname, '../render/dist/index.html'))
+  } else {
+    win.loadURL('http://localhost:2000')
+    // 打开开发者工具
+    win.webContents.openDevTools()
+  }
 }
 
 // Electron会在初始化完成并且准备好创建浏览器窗口时调用这个方法
@@ -78,6 +81,10 @@ app.on('activate', () => {
 // 代码 也可以拆分成几个文件，然后用 require 导入。
 ipcMain.on('app-root-path', (event) => {
   event.returnValue = path.resolve(__dirname, 'js/contextmenu.js')
+  // if (isProd) {
+  // } else {
+  //   event.returnValue = `file://${path.resolve(__dirname, 'js/contextmenu.js')}`
+  // }
 })
 ipcMain.on('contextmenu-show', (event, arg) => {
   showInRender(arg)
