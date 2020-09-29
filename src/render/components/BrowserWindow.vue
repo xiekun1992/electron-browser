@@ -32,7 +32,7 @@ export default {
   data() {
     return {
       preloadScript: '',
-      hoverLink: ''
+      hoverLink: '',
     }
   },
   methods: {
@@ -111,10 +111,24 @@ export default {
         this.newWindow(arg)
       }
     },
+    ipcMessage(event) {
+      const options = JSON.parse(event.channel)
+      options.y += 82
+      ipcRenderer.send('contextmenu-show', options)
+    },
     openDevTools() {
       if (this.view.active) {
         this.$refs.webview.openDevTools()
       }
+    },
+    updateTargetLink(event) {
+      this.hoverLink = event.url
+    },
+    enterHtmlFullscreen() {
+      this.$root.$emit('topbar-hide')
+    },
+    leaveHtmlFullscreen() {
+      this.$root.$emit('topbar-show')
     }
   },
   mounted() {
@@ -133,18 +147,14 @@ export default {
     this.$refs.webview.addEventListener('page-favicon-updated', this.pageFaviconUpdatedasync)
     this.$refs.webview.addEventListener('did-navigate-in-page', this.didNavigate)
     this.$refs.webview.addEventListener('did-navigate', this.didNavigate)
+    this.$refs.webview.addEventListener('enter-html-full-screen', this.enterHtmlFullscreen)
+    this.$refs.webview.addEventListener('leave-html-full-screen', this.leaveHtmlFullscreen)
 
     // this.$refs.webview.addEventListener('dom-ready', () => {
     //     this.$refs.webview.openDevTools()
     // })
-    this.$refs.webview.addEventListener('ipc-message', event => {
-      const options = JSON.parse(event.channel)
-      options.y += 82
-      ipcRenderer.send('contextmenu-show', options)
-    })
-    this.$refs.webview.addEventListener('update-target-url', (event) => {
-      this.hoverLink = event.url
-    })
+    this.$refs.webview.addEventListener('ipc-message', this.ipcMessage)
+    this.$refs.webview.addEventListener('update-target-url', this.updateTargetLink)
 
 
     this.$root.$on('page-reload', this.pageReload)
@@ -165,6 +175,11 @@ export default {
     this.$refs.webview.removeEventListener('did-stop-loading', this.pageTitleUpdated)
     this.$refs.webview.removeEventListener('new-window', this.newWindow)
     this.$refs.webview.removeEventListener('page-favicon-updated', this.pageFaviconUpdatedasync)
+    this.$refs.webview.removeEventListener('did-navigate-in-page', this.didNavigate)
+    this.$refs.webview.removeEventListener('did-navigate', this.didNavigate)
+
+    this.$refs.webview.removeEventListener('ipc-message', this.ipcMessage)
+    this.$refs.webview.removeEventListener('update-target-url', this.updateTargetLink)
 
     this.$root.$off('page-reload', this.pageReload)
     this.$root.$off('history-forward', this.historyForward)

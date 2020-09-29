@@ -1,5 +1,5 @@
 <template>
-  <header class="clearfix">
+  <header class="clearfix" :class="{invisible: !visible}">
     <ul class="tabs" id="tabsEl" :style="{'--tabnum': webviews.length}">
       <li class="tab-window" :class="{active: view.active}" v-for="view in webviews" :key="view.id" @click="switchTab(view)">
         <img :src="view.favicon" v-if="!!view.favicon">
@@ -61,7 +61,8 @@ export default {
   },
   data() {
     return {
-      url: ''
+      url: '',
+      visible: true
     }
   },
   watch: {
@@ -114,10 +115,27 @@ export default {
         return
       }
       this.$root.$emit('goto-site', this.url)
+    },
+    hide() {
+      this.visible = false
+    },
+    show() {
+      this.visible = true
     }
+  },
+  created() {
+    this.$root.$on('topbar-hide', this.hide)
+    this.$root.$on('topbar-show', this.show)
+  },
+  beforeDestroy() {
+    this.$root.$off('topbar-hide', this.hide)
+    this.$root.$off('topbar-show', this.show)
   }
 }
 </script>
-<style >
-
+<style scoped>
+.invisible {
+  height: 0;
+  overflow: hidden;
+}
 </style>
