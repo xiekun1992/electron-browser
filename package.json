@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "custom browser using electron",
   "author": "xkfront",
+  "email": "xkfront@outlook.com",
+  "url": "https://xiekun1992.github.io/",
   "homepage": "https://xiekun1992.github.io/",
   "build": {
     "copyright": "Copyright © 2020 xkfront",
@@ -31,15 +33,27 @@
           ]
         }
       ]
+    },
+    "linux": {
+      "icon": "./icons",
+      "maintainer": "xkfront",
+      "target": [
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
     }
   },
   "main": "./src/main/index.js",
   "scripts": {
     "start": "electron ./src/main/index.js --dev",
     "dev": "webpack && webpack-dev-server",
-    "release:win": "electron-builder --win --ia32",
-    "release:mac": "electron-builder --mac --ia32",
-    "release:linux": "electron-builder --linux --ia32",
+    "release:win": "electron-builder --win",
+    "release:mac": "electron-builder --mac",
+    "release:linux": "electron-builder --linux",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
