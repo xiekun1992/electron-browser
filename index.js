@@ -137,7 +137,7 @@ function setActiveView(view) {
 function resizeView() {
   setTimeout(() => {
     const rect = win.getBounds()
-    activeView.setBounds({
+    activeView?.setBounds({
       x: x, 
       y: y, 
       width: rect.x < 0? rect.width + rect.x * 2 : rect.width, 
