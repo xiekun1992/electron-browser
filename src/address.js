@@ -29,14 +29,24 @@ function Address({ activeTab }) {
   return (
     <div className='address-bar'>
       <ul className='navigate-btns'>
-        <li className='backward' onClick={backward}>&lt;</li>
-        <li className='forward' onClick={forward}>&gt;</li>
-        <li className='refresh' onClick={refresh}>R</li>
-        <li className='home' onClick={home}>H</li>
+        <li className='backward' onClick={backward}>
+          <span className='icon-arrow-left2'></span>
+        </li>
+        <li className='forward' onClick={forward}>
+          <span className='icon-arrow-right2'></span>
+        </li>
+        <li className='refresh' onClick={refresh}>
+          <span className='icon-spinner11'></span>
+        </li>
+        <li className='home' onClick={home}>
+          <span className='icon-home2'></span>
+        </li>
       </ul>
       <form onSubmit={submit}>
         <div>
-          <i className='safe-icon'></i>
+          <i className='safe-icon'>
+            <span className='icon-lock'></span>
+          </i>
           <input
             name='inputUrl'
             value={url}
@@ -45,7 +55,9 @@ function Address({ activeTab }) {
             onFocus={focus}
             onBlur={blur}
           />
-          <i className='bookmark'></i>
+          <i className='bookmark'>
+            <span className='icon-star-empty'></span>
+          </i>
         </div>
       </form>
     </div>

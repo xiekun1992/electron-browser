@@ -58,7 +58,7 @@ header {
     height: 60%;
   }
   &:hover {
-    background-color: #dfdfdf;
+    background-color: #f8f8f8;
   }
   &.active {
     background-color: #fff;
@@ -90,26 +90,30 @@ header {
   font-style: normal;
   width: 16px;
   height: 16px;
-  overflow: hidden;
   line-height: 13px;
-  font-size: 16px;
+  font-size: 8px;
   border-radius: 50%;
-  text-align: center;
   margin-left: 4px;
-  transition: background-color .3s;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
   &:hover {
-    background-color: #bfbfbf;
+    background-color: #ddd;
   }
 }
 .add-tab {
-  /* padding: 5px 10px; */
   border-radius: 50%;
   width: 32px;
   height: 32px;
   text-align: center;
-  font-size: 22px;
-  transition: background-color .3s;
+  font-size: 12px;
+  transition: background-color 0.3s;
   margin-left: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   &:hover {
     background-color: #bfbfbf;
   }
@@ -122,15 +126,20 @@ header {
   height: 25px;
   &>li {
     width: 44px;
-    background: #df3737;
     display: flex;
     flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    transition: background-color .3s;
   }
-  &>.window-minimize {
-    background: #39e339;
+  &>.window-minimize:hover,
+  &>.window-maximize:hover {
+    background: #ddd;
   }
-  &>.window-maximize {
-    background: #e7e732;
+  >.window-close:hover {
+    background-color: #E74C3C;
+    color: #fff;
   }
 }
 
@@ -138,16 +147,25 @@ header {
 .address-bar {
   display: grid;
   align-items: center;
-  grid-template-columns: 160px auto 40px;
+  grid-template-columns: 142px auto 40px;
   .navigate-btns {
     display: flex;
     align-items: center;
     height: 40px;
+    padding-left: 6px;
     &>li {
       width: 30px;
       height: 30px;
-      margin-left: 10px;
-      background-color: #ccc;
+      margin-left: 4px;
+      background-color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background-color .3s;
+      &:hover {
+        background-color: #eee;
+      }
     }
   }
   &>form {
@@ -161,11 +179,13 @@ header {
         width: 28px;
         height: 26px;
         border-radius: 15px;
-        display: block;
         position: absolute;
         transform: translateY(-50%);
         top: 50%;
         transition: background-color .3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         &:hover {
           background-color: #ccc;
         }

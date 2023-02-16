@@ -19,19 +19,29 @@ function Header ({ tabs }) {
                   onClick={() => {
                     deleteActiveViewById(tab.id)
                   }}
-                >&times;</i>
+                >
+                  <span className='icon-cross'></span>
+                </i>
               </li>
             )
           })
         }
         <li className='add-tab' onClick={() => {
           createNewView()
-        }}>+</li>
+        }}>
+          <span className='icon-plus'></span>
+        </li>
       </ul>
       <ul className='window-actions'>
-        <li className='window-minimize' onClick={minimize}></li>
-        <li className='window-maximize' onClick={maximize}></li>
-        <li className='window-close' onClick={close}></li>
+        <li className='window-minimize' onClick={minimize}>
+          <span className='icon-minus'></span>
+        </li>
+        <li className='window-maximize' onClick={maximize}>
+          <span className='icon-checkbox-unchecked'></span>
+        </li>
+        <li className='window-close' onClick={close}>
+          <span className='icon-cross'></span>
+        </li>
       </ul>
     </header>
   )

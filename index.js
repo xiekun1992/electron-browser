@@ -22,7 +22,7 @@ app.whenReady().then(() => {
   win.on('resize', () => {
     resizeView()
   })
-  // win.webContents.openDevTools({mode: 'detach'})
+  win.webContents.openDevTools({mode: 'detach'})
 })
 
 ipcMain.on('app.minimize', () => {
