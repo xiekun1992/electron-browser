@@ -34,7 +34,11 @@ function renderTabs() {
 }
 function gotoSite(e) {
   e.preventDefault()
-  ipcRenderer.send('goto-website', urlEl.value)
+  let url = urlEl.value
+  if (!(/^http/ig.test(url))) {
+    url = `http://${url}`
+  }
+  ipcRenderer.send('goto-website', url)
 }
 function getFavicon(url) {
   return new Promise((resolve, reject) => {
