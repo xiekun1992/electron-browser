@@ -224,5 +224,4 @@ app.whenReady().then(() => {
     }
 
     addView('https://www.baidu.com')
-    // addView('https://e-hentai.org/g/2492842/aecd93c75a')
 })
