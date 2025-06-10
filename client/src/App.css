@@ -1,0 +1,101 @@
+#root {
+  margin: 0;
+  background-color: blanchedalmond;
+}
+
+ul, li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.tabs {
+  app-region: drag;
+  display: flex;
+  justify-content: space-between;
+}
+.view-tabs {
+  app-region: no-drag;
+  display: flex;
+  padding: 4px 4px 0 4px;
+  font-size: 14px;
+  gap: 4px;
+}
+.view-tabs li {
+  padding: 4px 8px;
+  /* background: #fff; */
+  border-radius: 10px;
+  width: 160px;
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.view-tabs li.active,
+.view-tabs li:hover {
+  background-color: #bbb;
+}
+.tab-name {
+  width: calc(100% - 20px);
+  overflow: hidden;
+}
+.tab-close {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: #f00;
+  flex: 14px 0 0;
+}
+
+.app-btns {
+  app-region: no-drag;
+  display: flex;
+}
+.app-min {
+  width: 40px;
+  height: 34px;
+  background-color: #ccc;
+}
+.app-max {
+  width: 40px;
+  height: 34px;
+  background-color: #bbb;
+}
+.app-close {
+  width: 40px;
+  height: 34px;
+  background-color: #f00;
+}
+
+.address {
+  display: flex;
+  gap: 8px;
+  padding: 4px 8px;
+  background-color: #fff;
+  border-bottom: 1px solid #dedede;
+}
+.nav-tools {
+  display: flex;
+  gap: 8px;
+}
+.icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #dedede;
+}
+.address>input {
+  flex: 1 1;
+  border-radius: 20px;
+  border: 0;
+  background-color: #dedede;
+}
+.settings {
+  display: flex;
+  gap: 8px;
+}
